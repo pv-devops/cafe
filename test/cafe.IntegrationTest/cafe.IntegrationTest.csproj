@@ -7,13 +7,14 @@
     <PackageId>cafe.IntegrationTest</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PackageTargetFallback>$(PackageTargetFallback);dotnet5.4;portable-net451+win8</PackageTargetFallback>
-    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+    <!--<RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>-->
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\cafe\cafe.csproj" />
     <ProjectReference Include="..\cafe.Test\cafe.Test.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="4.2.1" />
     <PackageReference Include="FluentAssertions">
       <Version>4.19.2</Version>
     </PackageReference>
@@ -26,11 +27,9 @@
     <PackageReference Include="NLog">
       <Version>5.0.0-beta07</Version>
     </PackageReference>
-    <PackageReference Include="NLog.Extensions.Logging">
-      <Version>1.0.0-rtm-beta4</Version>
-    </PackageReference>
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.0-rc2" />
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-    <PackageReference Include="xunit" Version="2.2.0-beta5-build3474" />
+    <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
     <PackageReference Include="xunit.runner.visualstudio">
       <Version>2.2.0</Version>

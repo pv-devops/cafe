@@ -6,6 +6,11 @@ project.lock.json
 .DS_Store
 *.pyc
 
+### Visual Studio ###
+*.csproj.user
+Properties/
+.vs/
+
 ### Code ###
 # Visual Studio Code - https://code.visualstudio.com/
 .settings/
