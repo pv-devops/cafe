@@ -1,4 +1,5 @@
 #addin "Cake.Compression"
+#addin "Cake.Incubator"
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -18,6 +19,9 @@ var cafeUpdaterBuildDir = cafeUpdaterDirectory + Directory("bin") + Directory(co
 var cafeUnitTestProject = Directory("./test/cafe.Test/cafe.Test.csproj");
 var cafeCommandLineUnitTestProject = Directory("./test/cafe.CommandLine.Test/cafe.CommandLine.Test.csproj");
 var cafeIntegrationTestProject = Directory("./test/cafe.IntegrationTest/cafe.IntegrationTest.csproj");
+
+var cafeProjectDetails = ParseProject(cafeProject, configuration: configuration);
+var targetFramework = cafeProjectDetails.TargetFrameworkVersion;
 
 var buildSettings = new DotNetCoreBuildSettings { VersionSuffix = buildNumber, Configuration = configuration };
 
@@ -113,10 +117,10 @@ public void StageRelease(string runtimeIdentifier)
     var updaterStagingDirectory = versionStagingDirectory + Directory("updater");
     CreateDirectory(updaterStagingDirectory);
 
-    var cafeParentDirectory = buildDir + Directory("netcoreapp1.1");
+    var cafeParentDirectory = buildDir + Directory(targetFramework);
     
     CopyDirectory(cafeParentDirectory + Directory(runtimeIdentifier + "-x64") + Directory("publish"), versionStagingDirectory);
-    CopyDirectory(cafeUpdaterBuildDir + Directory("netcoreapp1.1") + Directory(runtimeIdentifier + "-x64") + Directory("publish"), updaterStagingDirectory);
+    CopyDirectory(cafeUpdaterBuildDir + Directory(targetFramework) + Directory(runtimeIdentifier + "-x64") + Directory("publish"), updaterStagingDirectory);
 }
 
 Task("Archive")
@@ -162,7 +166,7 @@ Task("Package")
 // TESTING TARGETS
 //////////////////////////////////////////////////////////////////////
 
-var cafeWindowsPublishDirectory = buildDir + Directory("netcoreapp1.1/win10-x64/publish");
+var cafeWindowsPublishDirectory = buildDir + Directory(targetFramework) + Directory("win10-x64/publish");
 
 Task("RunCafeWithNoArguments")
     .Does(() => {

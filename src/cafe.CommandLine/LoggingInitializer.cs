@@ -20,9 +20,9 @@ namespace cafe.CommandLine
 
         public static string LoggingConfigurationFileFor(string[] args)
         {
-            return args.FirstOrDefault() == "server" ? ServerLoggingConfigurationFile : ClientLoggingConfigurationFile;
+            string cafeDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+            string fileName = args.FirstOrDefault() == "server" ? ServerLoggingConfigurationFile : ClientLoggingConfigurationFile;
+            return System.IO.Path.Combine(cafeDir, fileName);
         }
-
-
     }
 }
