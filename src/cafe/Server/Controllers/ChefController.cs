@@ -4,6 +4,7 @@ using cafe.LocalSystem;
 using cafe.Server.Jobs;
 using cafe.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Win32;
 using NLog;
 
 namespace cafe.Server.Controllers
@@ -21,8 +22,9 @@ namespace cafe.Server.Controllers
             var fileSystem = new FileSystem(new EnvironmentBoundary(), commands);
             const string prefix = "chef-client";
             var product = "chef";
-
-            var chefDownloadUrlResolver = new ChefDownloadUrlResolver(product, prefix, "2012r2");
+            string target = GetChefOsTarget();
+            Logger.Info($"Determined ChefOsTarget: {target}");
+            var chefDownloadUrlResolver = new ChefDownloadUrlResolver(product, prefix, target);
             return new ChefJobRunner(StructureMapResolver.Container.GetInstance<JobRunner>(),
                 InspecController.CreateDownloadJob(fileSystem, product, chefDownloadUrlResolver),
                 InspecController.CreateInstallJob(product, fileSystem, commands, InstalledProductsFinder.IsChefClient,
@@ -30,6 +32,18 @@ namespace cafe.Server.Controllers
                 StructureMapResolver.Container.GetInstance<RunChefJob>());
         }
 
+        private static string GetChefOsTarget()
+        {
+            var osVersion = System.Environment.OSVersion.Version;
+            RegistryKey rk = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
+            // Default to 2012r2
+            if (rk == null) { return "2012r2"; }
+            var currentVersion = rk.GetValue("CurrentVersion").ToString();
+            return currentVersion == "10.0" ? "2016" :
+                   currentVersion == "6.3" ? "2012r2" :
+                   currentVersion == "6.2" ? "2012" :
+                   currentVersion == "6.1" ? "2008r2" : "2012r2";
+        }
 
         [HttpPut("run")]
         public JobRunStatus RunChef()
