@@ -155,11 +155,14 @@ Task("FullBuild")
     .IsDependentOn("Clean")
     .IsDependentOn("IncrementalBuild");
 
-Task("Package")
-    .IsDependentOn("Clean")
+Task("StageBuild")
+	.IsDependentOn("Clean")
     .IsDependentOn("Build")
     .IsDependentOn("Publish")
-    .IsDependentOn("Stage")
+    .IsDependentOn("Stage");
+
+Task("Package")
+	.IsDependentOn("StageBuild")
     .IsDependentOn("Archive");
 
 //////////////////////////////////////////////////////////////////////

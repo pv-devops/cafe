@@ -4,6 +4,7 @@ using cafe.CommandLine.LocalSystem;
 using cafe.Server;
 using cafe.Server.Jobs;
 using DasMulli.Win32.ServiceUtils;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,17 +22,8 @@ namespace cafe.Options.Server
         public void Start(string[] startupArguments, ServiceStoppedCallback serviceStoppedCallback)
         {
             Logger.Info("Starting service");
-            var config = new ConfigurationBuilder()
-                // .AddCommandLine(args)
-                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
-                .Build();
-
-            _webHost = new WebHostBuilder()
+            _webHost = WebHost.CreateDefaultBuilder()
                 .UseUrls($"http://*:{ServerSettings.Instance.Port}/")
-                .UseConfiguration(config)
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 
@@ -64,10 +56,17 @@ namespace cafe.Options.Server
         {
             var clientRunningFile = "chef-client-running.pid";
             var clientRunningFolder = $"{ServerSettings.Instance.InstallRoot}/chef/cache";
-            Logger.Info($"Listening for chef client to be running by listening for pid file {clientRunningFile} in {clientRunningFolder}");
-            FileSystemWatcher watcher = new FileSystemWatcher(clientRunningFolder) { Filter = clientRunningFile };
-            watcher.Created += PauseRunner;
-            watcher.Deleted += ResumeRunner;
+            if (File.Exists(clientRunningFolder))
+            {
+                Logger.Info($"Listening for chef client to be running by listening for pid file {clientRunningFile} in {clientRunningFolder}");
+                FileSystemWatcher watcher = new FileSystemWatcher(clientRunningFolder) { Filter = clientRunningFile };
+                watcher.Created += PauseRunner;
+                watcher.Deleted += ResumeRunner;
+            }
+            else
+            {
+                Logger.Warn($"Unable to locate chef client folder, '{clientRunningFolder}'. Changes to chef client will not be monitored until service is restarted.");
+            }
         }
 
         private static void ResumeRunner(object sender, FileSystemEventArgs e)
