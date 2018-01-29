@@ -6,7 +6,6 @@ using cafe.Server.Jobs;
 using DasMulli.Win32.ServiceUtils;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using NodaTime;
@@ -55,8 +54,10 @@ namespace cafe.Options.Server
         private static void ReactToChangesToChefClientRunning()
         {
             var clientRunningFile = "chef-client-running.pid";
-            var clientRunningFolder = $"{ServerSettings.Instance.InstallRoot}/chef/cache";
-            if (File.Exists(clientRunningFolder))
+            var clientRunningFolder = ServerSettings.Instance.IsLocalMode ?
+                $"{ServerSettings.Instance.InstallRoot}/chef/.chef/local-mode-cache/cache":
+                $"{ServerSettings.Instance.InstallRoot}/chef/cache";
+            if (Directory.Exists(clientRunningFolder))
             {
                 Logger.Info($"Listening for chef client to be running by listening for pid file {clientRunningFile} in {clientRunningFolder}");
                 FileSystemWatcher watcher = new FileSystemWatcher(clientRunningFolder) { Filter = clientRunningFile };
@@ -88,6 +89,8 @@ namespace cafe.Options.Server
             Presenter.ShowMessage("Server configuration changed, so resetting Chef Interval", Logger);
             ServerSettings.Reload();
             Initialize();
+            // cache directory may have been updated
+            ReactToChangesToChefClientRunning();
         }
 
         private static void Initialize()
@@ -112,7 +115,6 @@ namespace cafe.Options.Server
                     $"Since chef interval duration is set to {chefIntervalInSeconds}, not adding chef as a recurring task");
             }
         }
-
 
         public void Stop()
         {

@@ -41,5 +41,14 @@ namespace cafe.CommandLine.LocalSystem
             Logger.Debug($"Removing directory {directory}");
             Directory.Delete(directory, true);
         }
+
+        public void EnsureDirectoryExists(string directory)
+        {
+            Logger.Debug($"Ensuring directory {directory} exists");
+            if (!DirectoryExists(directory))
+            {
+                CreateDirectory(directory);
+            }
+        }
     }
 }

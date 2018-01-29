@@ -83,11 +83,25 @@ namespace cafe.Server.Controllers
                 CreateChefBootstrapper(config, validator, ChefRunner.ParseRunList(runList)));
         }
 
+        [HttpPut("bootstrap/repo")]
+        public JobRunStatus BootstrapChefZero(string policyGroup, string repoUrl, string dataBagName, string dataBagUrl)
+        {
+            var description = $"Bootstrapping chef-zero with policy repo archive {repoUrl} and policygroup {policyGroup}, using data_bag {dataBagName} at {dataBagUrl}";
+            Logger.Info(description);
+            return ChefJobRunner.RunChefJob.Bootstrap(CreateChefZeroBootstrapper(policyGroup, repoUrl, dataBagName, dataBagUrl));
+        }
+
         private static IRunChefPolicy CreateChefBootstrapper(string config, string validator,
             BootstrapSettings bootstrapSettings)
         {
             return new BootstrapChefPolicy(StructureMapResolver.Container.GetInstance<IFileSystemCommands>(), config,
                 validator, bootstrapSettings);
+        }
+
+        private static IRunChefPolicy CreateChefZeroBootstrapper(string policyGroup, string repoUrl, string dataBagName, string dataBagUrl)
+        {
+            return new BootstrapChefZeroPolicy(StructureMapResolver.Container.GetInstance<IFileSystemCommands>(), 
+                policyGroup, repoUrl, dataBagName, dataBagUrl);
         }
 
         [HttpPut("pause")]

@@ -27,6 +27,10 @@ namespace cafe.Client
         [Put("bootstrap/runList")]
         Task<JobRunStatus> BootstrapChef(string config, string validator, string runList);
 
+        [Put("bootstrap/repo")]
+        Task<JobRunStatus> BootstrapChefZero(string policyGroup, string repoUrl, string dataBagName, string dataBagUrl);
+
+
         [Put("pause")]
         Task<ChefStatus> Pause();
 

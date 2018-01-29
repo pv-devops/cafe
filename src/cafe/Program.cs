@@ -121,6 +121,15 @@ namespace cafe
                         OptionValueSpecification.ForValue("config:", "the client.rb file"),
                         OptionValueSpecification.ForValue("validator:", "the validator.pem file used to join the node"),
                         OnNode());
+                    chefGroup.WithOption(
+                        new BootstrapChefZeroPolicyOption(restClientForChefServerFactory, schedulerWaiter,
+                            fileSystemCommands),
+                        OptionValueSpecification.ForCommand("bootstrap"),
+                        OptionValueSpecification.ForValue("group:", "the policy group"),
+                        OptionValueSpecification.ForValue("repo:", "the url of the exported chef-zero policy repo archive"),
+                        OptionValueSpecification.ForValue("data-bag:", "the name of the data_bag to be hoisted with policy repo"),
+                        OptionValueSpecification.ForValue("data-bag-json:", "the url of the data_bag JSON to be saved into the deployed policy repo"),
+                        OnNode());
                     var installChefOption =
                         new InstallOption<IChefServer, ChefStatus>(chefProduct, restClientForChefServerFactory,
                             schedulerWaiter);

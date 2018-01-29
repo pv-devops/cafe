@@ -1,4 +1,5 @@
 ﻿using cafe.CommandLine;
+using Newtonsoft.Json;
 using NLog;
 
 namespace cafe
@@ -32,10 +33,17 @@ namespace cafe
         /// <remarks>this should only change in a testing scenario</remarks>
         public string UpdaterDirectory { get; set; } = "updater";
 
+        /// <summary>
+        /// Flag determining whether using Chef Zero or not
+        /// </summary>
+        /// <remarks>this would change for chef-zero scenario</remarks>
+        public bool IsLocalMode { get; set; } = false;
+
         public const int DefaultPort = 59320;
 
         private static ServerSettings _instance;
 
+        [JsonIgnore]
         public static ServerSettings Instance => _instance ?? (_instance = SettingsReader.Read<ServerSettings>("Server", "server.json"));
 
         public static void Reload()

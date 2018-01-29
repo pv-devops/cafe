@@ -16,7 +16,7 @@ namespace cafe.CommandLine.LocalSystem
             _processCreator = processCreator;
         }
 
-        public Result ExecuteAndWaitForExit(string filename, string processArguments,
+        public Result ExecuteAndWaitForExit(string filename, string processArguments, string workingDirectory,
             EventHandler<string> processOnOutputDataReceived,
             EventHandler<string> processOnErrorDataReceived)
         {
@@ -27,13 +27,14 @@ namespace cafe.CommandLine.LocalSystem
                     UseShellExecute = false,
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
+                    WorkingDirectory = workingDirectory,
                     Arguments = processArguments
                 };
                 process.OutputDataReceived += processOnOutputDataReceived;
                 process.ErrorDataReceived += processOnErrorDataReceived;
                 try
                 {
-                    Logger.Debug($"Starting process {filename} with arguments {processArguments}");
+                    Logger.Debug($"Starting process {filename} using working directory {workingDirectory} with arguments {processArguments}");
                     process.Start();
 
                 }

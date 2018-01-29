@@ -16,7 +16,6 @@ namespace cafe.Chef
         private readonly ProcessExecutor _processExecutor;
         private readonly IFileSystem _fileSystem;
 
-
         public ChefProcess(ProcessExecutor processExecutor, IFileSystem fileSystem)
         {
             _processExecutor = processExecutor;
@@ -30,6 +29,7 @@ namespace cafe.Chef
             var chefInstallDirectory = Directory.GetParent(binDirectory).FullName;
             var rubyExecutable = RubyExecutableWithin(chefInstallDirectory);
             var chefClientLoaderFile = ChefClientLoaderWithin(chefInstallDirectory);
+            var chefWorkingDirectory = $@"{ServerSettings.Instance.InstallRoot}\chef";
 
             var arguments = new List<string>() {chefClientLoaderFile};
             arguments.AddRange(args);
@@ -40,10 +40,10 @@ namespace cafe.Chef
             string filename = rubyExecutable;
             EventHandler<string> processOnOutputDataReceived = ProcessOnOutputDataReceived;
             EventHandler<string> processOnErrorDataReceived = ProcessOnErrorDataReceived;
-            return _processExecutor.ExecuteAndWaitForExit(filename, processArguments, processOnOutputDataReceived,
+            return _processExecutor.ExecuteAndWaitForExit(filename, processArguments, chefWorkingDirectory, 
+                processOnOutputDataReceived,
                 processOnErrorDataReceived);
         }
-
 
         public event EventHandler<ChefLogEntry> LogEntryReceived;
 

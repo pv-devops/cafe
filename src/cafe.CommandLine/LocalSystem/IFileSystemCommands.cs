@@ -8,5 +8,6 @@
         void WriteFileText(string filename, string contents);
         string ReadAllText(string filename);
         void DeleteDirectory(string directory);
+        void EnsureDirectoryExists(string directory);
     }
 }

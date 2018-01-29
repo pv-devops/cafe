@@ -39,5 +39,9 @@ namespace cafe.Test.LocalSystem
         public void DeleteDirectory(string directory)
         {
         }
+
+        public void EnsureDirectoryExists(string directory)
+        {
+        }
     }
 }
