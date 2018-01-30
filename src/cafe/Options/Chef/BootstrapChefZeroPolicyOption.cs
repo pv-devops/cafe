@@ -16,14 +16,19 @@ namespace cafe.Options.Chef
         public BootstrapChefZeroPolicyOption(Func<IChefServer> chefServerFactory, ISchedulerWaiter schedulerWaiter,
             IFileSystemCommands fileSystemCommands)
             : base(chefServerFactory, schedulerWaiter,
-                "bootstraps chef zero to run the first time with the given policy name, group, and export repo")
+                "bootstraps chef-zero to run the first time with the given policy group, exported repo, and optional data_bag name and definition")
         {
             _fileSystemCommands = fileSystemCommands;
         }
 
         protected override string ToDescription(Argument[] args)
         {
-            return $"Bootstrapping Chef Zero to with Report {FindRepoValue(args)} and Group {FindGroupValue(args)}";
+            string description = $"Bootstrapping chef-zero with Repo {FindRepoValue(args)} and Group {FindGroupValue(args)}";
+            if (!string.IsNullOrEmpty(FindDataBagNameValue(args)) & !string.IsNullOrEmpty(FindDataBagUrlValue(args)))
+            {
+                description += $" using DataBag {FindDataBagNameValue(args)} at {FindDataBagUrlValue(args)}";
+            }
+            return description;
         }
 
         private static string FindGroupValue(Argument[] args)

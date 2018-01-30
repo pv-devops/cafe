@@ -16,6 +16,13 @@ namespace cafe.CommandLine.LocalSystem
             _processCreator = processCreator;
         }
 
+        public Result ExecuteAndWaitForExit(string filename, string processArguments,
+            EventHandler<string> processOnOutputDataReceived,
+            EventHandler<string> processOnErrorDataReceived)
+        {
+            return ExecuteAndWaitForExit(filename, processArguments, GetExecutionDirectory(), processOnOutputDataReceived, processOnErrorDataReceived);
+        }
+
         public Result ExecuteAndWaitForExit(string filename, string processArguments, string workingDirectory,
             EventHandler<string> processOnOutputDataReceived,
             EventHandler<string> processOnErrorDataReceived)
@@ -54,6 +61,14 @@ namespace cafe.CommandLine.LocalSystem
                     ? Result.Successful()
                     : Result.Failure($"Process {process} exited with code {process.ExitCode}");
             }
+        }
+
+        private string GetExecutionDirectory()
+        {
+            string codeBase = System.Reflection.Assembly.GetEntryAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Uri.UnescapeDataString(uri.Path);
+            return System.IO.Path.GetDirectoryName(path);
         }
     }
 }

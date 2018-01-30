@@ -55,7 +55,7 @@ namespace cafe.Server.Jobs
             catch (Exception ex)
             {
                 Logger.Error(ex,
-                    $"An unexpected error occurred while runnnig {_description} ({Id}): {ex.Message}");
+                    $"An unexpected error occurred while running {_description} ({Id}): {ex.Message}");
                 result = Result.Failure($"An unexpected error occurred: {ex.Message}");
             }
             return result;

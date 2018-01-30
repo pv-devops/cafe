@@ -14,7 +14,7 @@ namespace cafe.Chef
     {
         private static readonly Logger Logger = LogManager.GetLogger(typeof(BootstrapChefZeroPolicy).FullName);
 
-        private static readonly string ClientLocalModeConfigPath = $@"{ChefInstallDirectory}\.chef\client.rb";
+        private static readonly string ClientLocalModeConfigPath = $@"{ChefInstallDirectory}\.chef\config.rb";
 
         private readonly IFileSystemCommands _fileSystemCommands;
         private readonly string _policyGroup;
@@ -73,7 +73,7 @@ namespace cafe.Chef
             }
             catch (System.Exception ex)
             {
-                Logger.Error($"An error occurred while deploying chef-zero policy repo {_repoUrl}. Details: {ex.Message} :: {ex.StackTrace}");
+                Logger.Error($"An error occurred while deploying chef-zero policy repo {_repoUrl} | Details: {ex.Message} :: {ex.StackTrace}");
                 throw;
             }
         }
@@ -95,7 +95,7 @@ namespace cafe.Chef
 
         private async Task WriteDataBag()
         {
-            string dataBagParentDir = $@"{ChefInstallDirectory}\data_bag";
+            string dataBagParentDir = $@"{ChefInstallDirectory}\data_bags";
             string dataBagDir = $@"{dataBagParentDir}\{_dataBagName}";
             string dataBagFileName = Path.GetFileName(_dataBagUrl);
             string dataBagPath = $@"{dataBagDir}\{dataBagFileName}";

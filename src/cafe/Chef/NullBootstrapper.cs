@@ -6,7 +6,7 @@ namespace cafe.Chef
     {
         protected static readonly string ChefInstallDirectory = $@"{ServerSettings.Instance.InstallRoot}\chef";
         protected static readonly string ClientConfigPath = ServerSettings.Instance.IsLocalMode ?
-            $@"{ChefInstallDirectory}\.chef\client.rb" :
+            $@"{ChefInstallDirectory}\.chef\config.rb" :
             $@"{ChefInstallDirectory}\client.rb";
 
         public virtual void PrepareEnvironmentForChefRun()
